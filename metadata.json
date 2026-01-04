@@ -1,0 +1,8 @@
+{
+  "name": "智能学习动态效率分析与个性化建议系统",
+  "description": "基于 MediaPipe 视觉分析与 Gemini AI 的学生专注度实时监测与导学系统。",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

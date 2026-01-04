@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统架构与原理图 - 智能学习助手</title>
+    <!-- 引入 Tailwind CSS 进行美化 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f8fafc; /* Slate-50: 浅色背景 */
+            color: #1e293b; /* Slate-800: 深色文字 */
+        }
+        .diagram-container {
+            background-color: #ffffff; /* 白色背景 */
+            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow-x: auto;
+            display: flex;
+            justify-content: center;
+        }
+        /* 调整 Mermaid 内部文字样式 - 强制深色 */
+        .nodeLabel { color: #1e293b !important; font-weight: bold; }
+        .edgeLabel { background-color: #ffffff !important; color: #475569 !important; }
+    </style>
+</head>
+<body class="p-4 md:p-10 max-w-7xl mx-auto">
+    
+    <!-- 标题头 -->
+    <div class="text-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-3">智能学习系统架构设计</h1>
+        <p class="text-slate-500">System Architecture & Core Workflow Visualization</p>
+    </div>
+
+    <!-- 第一张图：架构图 -->
+    <div class="mb-16">
+        <h2 class="text-2xl font-bold mb-6 text-blue-600 flex items-center border-l-4 border-blue-500 pl-4">
+            图一：软硬件分层架构图 (System Architecture)
+        </h2>
+        <p class="text-slate-500 mb-4 text-sm">
+            采用四层独立堆叠结构：物理层(底) -> 服务层 -> 应用层 -> 云端层(顶)。
+        </p>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TD
+    %% --- 样式定义 ---
+    classDef cloud fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0c4a6e
+    classDef client fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+    classDef server fill:#f3e8ff,stroke:#9333ea,stroke-width:2px,color:#581c87
+    classDef hardware fill:#fee2e2,stroke:#dc2626,stroke-width:2px,color:#7f1d1d
+
+    %% === Layer 4: 云端层 (Top) ===
+    subgraph L4 ["☁️ Layer 4: 云端智能层 (Cloud API)"]
+        direction LR
+        Gemini_Live["Gemini Live API<br>(WebSocket 语音交互)"]:::cloud
+        Gemini_Pro["Gemini Pro API<br>(REST 文本/视觉分析)"]:::cloud
+    end
+
+    %% === Layer 3: 应用层 ===
+    subgraph L3 ["🖥️ Layer 3: 前端应用层 (Browser / React)"]
+        direction TB
+        Audio_Web["Web Audio API<br>(音频流处理)"]:::client
+        State_Logic["核心状态机 Logic<br>(专注/疲劳判定)"]:::client
+        Vision_Wasm["MediaPipe WASM<br>(本地视觉推理)"]:::client
+        React_UI["React UI 界面<br>(视频渲染)"]:::client
+    end
+
+    %% === Layer 2: 服务层 ===
+    subgraph L2 ["🍓 Layer 2: 边缘服务端 (Node.js / RPi)"]
+        direction TB
+        API_Svc["Express API Gateway<br>(指令路由)"]:::server
+        Stream_Svc["MJPEG 流媒体服务<br>(视频推流)"]:::server
+        DB_Svc["SQLite 数据库<br>(数据存储)"]:::server
+        HW_Ctrl["硬件控制进程<br>(GPIO / Audio)"]:::server
+    end
+
+    %% === Layer 1: 物理层 (Bottom) ===
+    subgraph L1 ["🔌 Layer 1: 物理硬件层 (Hardware)"]
+        direction LR
+        Mic_Hw["🎤 麦克风"]:::hardware
+        Speaker_Hw["🔈 音响"]:::hardware
+        Lamp_Hw["💡 智能台灯"]:::hardware
+        Cam_Hw["📷 摄像头"]:::hardware
+    end
+
+    %% === 连接关系 (由下至上或闭环) ===
+
+    %% 1. 左侧通道：语音交互流
+    Mic_Hw ==> Audio_Web
+    Audio_Web <==> Gemini_Live
+
+    %% 2. 右侧通道：视觉分析流
+    Cam_Hw ==> Stream_Svc
+    Stream_Svc -.-> React_UI
+    React_UI --> Vision_Wasm
+    Vision_Wasm --> State_Logic
+    State_Logic <--> Gemini_Pro
+
+    %% 3. 中间通道：控制与反馈流
+    State_Logic ==> API_Svc
+    API_Svc ==> HW_Ctrl
+    API_Svc <--> DB_Svc
+    
+    HW_Ctrl ==> Lamp_Hw
+    HW_Ctrl ==> Speaker_Hw
+            </div>
+        </div>
+    </div>
+
+    <!-- 第二张图：原理图 -->
+    <div class="mb-16">
+        <h2 class="text-2xl font-bold mb-6 text-yellow-600 flex items-center border-l-4 border-yellow-500 pl-4">
+            图二：系统核心工作原理图 (Workflow & Logic)
+        </h2>
+        <p class="text-slate-500 mb-4 text-sm">
+            展示了从多模态感知、EAR/MAR 算法分析到状态机判定，最终触发硬件闭环干预的完整流程。
+        </p>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TD
+    classDef input fill:#f1f5f9,stroke:#64748b,stroke-width:2px,color:#334155
+    classDef process fill:#fef08a,stroke:#eab308,stroke-width:2px,color:#713f12
+    classDef logic fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+    classDef action fill:#fecaca,stroke:#dc2626,stroke-width:2px,color:#7f1d1d
+
+    Start(("系统启动")) --> Sensor_Input
+
+    subgraph INPUT ["1. 多模态感知"]
+        Sensor_Input["摄像头 & 麦克风采集"]:::input
+        Stream["MJPEG 视频流传输"]:::input
+    end
+
+    INPUT --> VISION_PROC
+
+    subgraph VISION ["2. 边缘视觉分析 (每秒 20 帧)"]
+        VISION_PROC["MediaPipe 关键点检测"]:::process
+        
+        Calc_EAR{"计算 EAR<br>眼部纵横比"}:::process
+        Calc_MAR{"计算 MAR<br>嘴部纵横比"}:::process
+        Calc_Pose{"计算 Pose<br>头部欧拉角"}:::process
+        
+        VISION_PROC --> Calc_EAR & Calc_MAR & Calc_Pose
+    end
+
+    subgraph LOGIC ["3. 状态机逻辑判定"]
+        Calc_EAR -->|"EAR < 0.25 持续 N 帧"| Blink_Logic["判定: 闭眼/疲劳"]:::logic
+        Calc_MAR -->|"MAR > 0.5"| Yawn_Logic["判定: 打哈欠"]:::logic
+        Calc_Pose -->|"Pitch/Yaw 偏移大"| Pose_Logic["判定: 分心/离座"]:::logic
+        
+        Blink_Logic & Yawn_Logic & Pose_Logic --> State_Merge{"综合状态融合"}:::logic
+    end
+
+    State_Merge -->|"状态: 专注"| Action_Record["记录数据"]:::action
+    State_Merge -->|"状态: 疲劳"| Action_Tired["触发疲劳干预"]:::action
+    State_Merge -->|"状态: 分心"| Action_Distract["触发分心提醒"]:::action
+
+    subgraph FEEDBACK ["4. 实时硬件干预"]
+        Action_Tired -->|"API 请求"| Lamp_Flash["台灯: 呼吸闪烁"]:::action
+        Action_Tired -->|"API 请求"| Voice_Alert["音响: '请休息一下'"]:::action
+        
+        Action_Distract -->|"API 请求"| Lamp_Bright["台灯: 调亮唤醒"]:::action
+        Action_Distract -->|"API 请求"| Voice_Guide["语音: '请集中注意力'"]:::action
+    end
+
+    subgraph LONG_TERM ["5. 长期数据闭环"]
+        Action_Record --> DB[("SQLite 数据库")]
+        DB -->|"周报聚合"| Gemini_Report["Gemini 生成个性化建议"]
+        Gemini_Report --> User_View["用户查看报表"]
+    end
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="text-center text-slate-400 text-sm pb-10">
+        Generated by Mermaid.js & Tailwind CSS
+    </div>
+
+    <!-- 引入 Mermaid 库并初始化 -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base', // 使用基础主题
+            themeVariables: {
+                primaryColor: '#f8fafc',    // 节点背景浅色
+                primaryTextColor: '#1e293b', // 节点文字深色
+                primaryBorderColor: '#94a3b8', // 边框颜色
+                lineColor: '#64748b',       // 连线颜色
+                secondaryColor: '#ffffff',
+                tertiaryColor: '#f1f5f9'
+            }
+        });
+    </script>
+</body>
+</html>

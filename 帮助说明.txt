@@ -1,0 +1,8 @@
+1、测试台灯和声音，ctrl+c退出server，输入：node scripts/hardware_check.js；
+
+2、server起不来，导致3000端口被占，可以强制杀掉所有 node 进程（解决端口占用）
+sudo pkill -f node，如果还不行，按照下面输入命令回车：
+pi@raspberrypi:~/study-guardian $ sudo fuser -k 3000/tcp
+3000/tcp:             2460
+pi@raspberrypi:~/study-guardian $ sudo kill -9 2460
+
